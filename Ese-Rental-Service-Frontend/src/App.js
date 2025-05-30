@@ -3,6 +3,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage";
 import HomePage from "./pages/HomePage";
 import { useState } from "react";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import RegisterPage from "./pages/auth/RegisterPage";
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem("token"));
@@ -11,11 +14,10 @@ function App() {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<HomePage />} />
-                {!token ? (
-                    <Route path="/login" element={<LoginPage onLogin={setToken} />} />
-                ) : (
-                    <Route path="/dashboard" element={<DashboardPage />} />
-                )}
+                <Route path="/login" element={<LoginPage onLogin={setToken} />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/register" element={<RegisterPage />} />
                 <Route path="*" element={<h2>Page Not Found</h2>} />
             </Routes>
         </BrowserRouter>

@@ -65,7 +65,7 @@ function Footer() {
 
                 {/* Copyright */}
                 <div className="copyright">
-                    <p>&copy; 2023 Ese Rental Service. All rights reserved.</p>
+                    <p>&copy; 2025 Ese Rental Service. All rights reserved.</p>
                 </div>
             </div>
         </footer>
