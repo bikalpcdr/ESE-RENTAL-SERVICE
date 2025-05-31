@@ -155,4 +155,40 @@
         flex-direction: column;
         gap: 0.5rem;
     }
+}
+
+.page-nav-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.back-button,
+.home-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.back-button {
+    background-color: #e5e7eb;
+    color: #1f2937;
+    border: none;
+}
+
+.back-button:hover {
+    background-color: #d1d5db;
+}
+
+.home-button {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+}
+
+.home-button:hover {
+    background-color: #1d4ed8;
 } 

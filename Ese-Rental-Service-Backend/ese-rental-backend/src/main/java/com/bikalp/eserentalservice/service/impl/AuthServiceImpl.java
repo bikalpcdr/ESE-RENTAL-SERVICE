@@ -1,14 +1,15 @@
 package com.bikalp.eserentalservice.service.impl;
 
 import com.bikalp.eserentalservice.dto.UserDto;
-import com.bikalp.eserentalservice.dto.auth.AuthResponse;
-import com.bikalp.eserentalservice.dto.auth.LoginRequest;
-import com.bikalp.eserentalservice.dto.auth.RegisterRequest;
+import com.bikalp.eserentalservice.dto.auth.*;
 import com.bikalp.eserentalservice.entity.User;
 import com.bikalp.eserentalservice.enums.UserRole;
 import com.bikalp.eserentalservice.exception.BadRequestException;
+import com.bikalp.eserentalservice.exception.ResourceNotFoundException;
+import com.bikalp.eserentalservice.repository.UserRepo;
 import com.bikalp.eserentalservice.service.AuthService;
 import com.bikalp.eserentalservice.service.UserService;
+import com.bikalp.eserentalservice.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,11 +18,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -31,6 +36,11 @@ public class AuthServiceImpl implements AuthService {
     private final UserService userService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final UserRepo userRepo;
+    private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
+    private static final int OTP_LENGTH = 6;
+    private static final int OTP_VALIDITY_MINUTES = 10;
 
     @Override
     @Transactional
@@ -104,6 +114,105 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    @Override
+    @Transactional
+    public ForgetPasswordResponse forgotPassword(ForgotPasswordRequest request) {
+        log.info("Processing forgot password request for identifier: {}", request.getIdentifier());
+        
+        User user = userRepo.findByUsernameOrEmail(request.getIdentifier(), request.getIdentifier())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with provided identifier"));
+
+        // Generate OTP
+        String otp = generateOTP();
+        LocalDateTime otpExpiry = LocalDateTime.now().plusMinutes(OTP_VALIDITY_MINUTES);
+
+        // Save OTP and expiry
+        user.setResetToken(otp);
+        user.setResetTokenExpiry(otpExpiry);
+        userRepo.save(user);
+
+        // Send OTP email
+        try {
+            emailService.sendPasswordResetOTP(user.getEmail(), otp);
+            log.info("OTP sent successfully to user: {}", user.getUsername());
+        } catch (Exception e) {
+            log.error("Failed to send OTP email to user: {}", user.getUsername(), e);
+            throw new BadRequestException("Failed to send OTP. Please try again later.");
+        }
+
+        ForgetPasswordResponse response = new ForgetPasswordResponse();
+        response.setEmail(user.getEmail());
+        response.setPhoneNumber(user.getPhoneNumber());
+        response.setMessage("OTP has been sent to your email");
+
+        return response;
+    }
+
+    @Override
+    @Transactional
+    public VerifyOTPResponse verifyOTP(VerifyOTPRequest request) {
+        log.info("Verifying OTP for email: {}", request.getEmail());
+        
+        User user = userRepo.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (user.getResetToken() == null || user.getResetTokenExpiry() == null) {
+            log.error("No OTP request found for user: {}", user.getUsername());
+            throw new BadRequestException("No OTP request found. Please request a new OTP.");
+        }
+
+        if (user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
+            log.error("OTP expired for user: {}", user.getUsername());
+            throw new BadRequestException("OTP has expired. Please request a new OTP.");
+        }
+
+        if (!user.getResetToken().equals(request.getOtp())) {
+            log.error("Invalid OTP provided for user: {}", user.getUsername());
+            throw new BadRequestException("Invalid OTP. Please try again.");
+        }
+
+        // Generate a temporary token for password reset
+        String resetToken = generateResetToken();
+        user.setResetToken(resetToken);
+        user.setResetTokenExpiry(LocalDateTime.now().plusMinutes(OTP_VALIDITY_MINUTES));
+        userRepo.save(user);
+
+        log.info("OTP verified successfully for user: {}", user.getUsername());
+
+        return VerifyOTPResponse.builder()
+                .message("OTP verified successfully")
+                .resetToken(resetToken)
+                .email(user.getEmail())
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public ResetPasswordResponse resetPassword(ResetPasswordRequest request) {
+        log.info("Processing password reset request");
+        
+        User user = userRepo.findByResetToken(request.getToken())
+                .orElseThrow(() -> new BadRequestException("Invalid reset token"));
+
+        if (user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
+            log.error("Reset token expired for user: {}", user.getUsername());
+            throw new BadRequestException("Reset token has expired. Please request a new OTP.");
+        }
+
+        // Update password
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setResetToken(null);
+        user.setResetTokenExpiry(null);
+        userRepo.save(user);
+
+        log.info("Password reset successful for user: {}", user.getUsername());
+
+        return ResetPasswordResponse.builder()
+                .message("Password reset successful")
+                .username(user.getUsername())
+                .build();
+    }
+
     private void validateRegistrationRequest(RegisterRequest request) {
         log.debug("Validating registration request for user: {}", request.getUsername());
         if (userService.existsByUsername(request.getUsername())) {
@@ -122,7 +231,8 @@ public class AuthServiceImpl implements AuthService {
         userDto.setEmail(request.getEmail());
         userDto.setFullName(request.getFullName());
         userDto.setPhoneNumber(request.getPhoneNumber());
-        userDto.setRole(UserRole.CUSTOMER); // Default role
+        // default role for user..!!
+        userDto.setRole(UserRole.CUSTOMER);
         return userDto;
     }
 
@@ -131,9 +241,6 @@ public class AuthServiceImpl implements AuthService {
             log.debug("Generating token for user: {}", userDto.getUsername());
             
             // Validate userDto
-            if (userDto == null) {
-                throw new IllegalArgumentException("UserDto cannot be null");
-            }
             if (userDto.getUsername() == null || userDto.getUsername().trim().isEmpty()) {
                 throw new IllegalArgumentException("Username cannot be null or empty");
             }
@@ -148,7 +255,7 @@ public class AuthServiceImpl implements AuthService {
             List<SimpleGrantedAuthority> authorities = Collections.singletonList(
                 new SimpleGrantedAuthority("ROLE_" + userDto.getRole().name())
             );
-            
+
             // Create UserDetails object
             UserDetails userDetails = new org.springframework.security.core.userdetails.User(
                 userDto.getUsername().trim(),
@@ -159,7 +266,7 @@ public class AuthServiceImpl implements AuthService {
                 true, // accountNonLocked
                 authorities
             );
-            
+
             // Generate token
             String token = jwtService.generateToken(userDetails);
             log.debug("Token generated successfully for user: {}", userDto.getUsername());
@@ -168,5 +275,18 @@ public class AuthServiceImpl implements AuthService {
             log.error("Error generating token for user {}: {}", userDto.getUsername(), e.getMessage(), e);
             throw new BadRequestException("Token generation failed: " + e.getMessage());
         }
+    }
+
+    private String generateOTP() {
+        Random random = new Random();
+        StringBuilder otp = new StringBuilder();
+        for (int i = 0; i < OTP_LENGTH; i++) {
+            otp.append(random.nextInt(10));
+        }
+        return otp.toString();
+    }
+
+    private String generateResetToken() {
+        return UUID.randomUUID().toString();
     }
 } 

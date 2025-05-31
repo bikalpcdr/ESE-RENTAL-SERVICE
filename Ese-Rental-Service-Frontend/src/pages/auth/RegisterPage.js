@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import '../../styles/RegisterPage.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function RegisterPage() {
   const [form, setForm] = useState({
@@ -15,6 +16,8 @@ function RegisterPage() {
   const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -150,6 +153,10 @@ function RegisterPage() {
         </form>
         <div className="register-links">
           <a href="/login" className="register-link">Already have an account? Login</a>
+        </div>
+        <div className="page-nav-buttons">
+            <button onClick={() => navigate(-1)} className="back-button">Back to Previous</button>
+            <button onClick={() => navigate('/')} className="home-button">Go to Home</button>
         </div>
       </main>
     </div>

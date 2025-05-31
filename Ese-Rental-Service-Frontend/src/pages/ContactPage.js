@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import '../styles/ContactPage.css';
+import { useNavigate } from 'react-router-dom';
 
 function ContactPage() {
     const [form, setForm] = useState({ name: '', email: '', message: '' });
     const [submitted, setSubmitted] = useState(false);
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -61,6 +63,10 @@ function ContactPage() {
                             <li>Address: Bhatke-Paati, Kirtipur, Kathmandu</li>
                         </ul>
                     </div>
+                </div>
+                <div className="page-nav-buttons">
+                    <button onClick={() => navigate(-1)} className="back-button">Back to Previous</button>
+                    <button onClick={() => navigate('/')} className="home-button">Go to Home</button>
                 </div>
             </main>
             <Footer />

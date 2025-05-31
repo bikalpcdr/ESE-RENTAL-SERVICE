@@ -1,8 +1,6 @@
 package com.bikalp.eserentalservice.service;
 
-import com.bikalp.eserentalservice.dto.auth.AuthResponse;
-import com.bikalp.eserentalservice.dto.auth.LoginRequest;
-import com.bikalp.eserentalservice.dto.auth.RegisterRequest;
+import com.bikalp.eserentalservice.dto.auth.*;
 
 public interface AuthService {
     /**
@@ -18,4 +16,10 @@ public interface AuthService {
      * @return authentication response with token
      */
     AuthResponse login(LoginRequest request);
+
+    ForgetPasswordResponse forgotPassword(ForgotPasswordRequest request);
+
+    VerifyOTPResponse verifyOTP(VerifyOTPRequest request);
+
+    ResetPasswordResponse resetPassword(ResetPasswordRequest request);
 } 

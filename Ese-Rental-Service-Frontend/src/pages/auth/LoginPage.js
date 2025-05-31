@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import '../../styles/LoginPage.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function LoginPage({ onLogin }) {
   const [username, setUsername] = useState("");
@@ -81,8 +81,12 @@ function LoginPage({ onLogin }) {
           {error && <div className="login-error">{error}</div>}
         </form>
         <div className="login-links">
-          <a href="#" className="login-link">Forgot password?</a>
-          <a href="/register" className="login-link">Register</a>
+          <Link to="/forgot-password" className="login-link">Forgot password?</Link>
+          <Link to="/register" className="login-link">Register</Link>
+        </div>
+        <div className="page-nav-buttons">
+          <button onClick={() => navigate(-1)} className="back-button">Back to Previous</button>
+          <button onClick={() => navigate('/')} className="home-button">Go to Home</button>
         </div>
       </main>
     </div>

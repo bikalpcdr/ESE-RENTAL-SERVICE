@@ -1,8 +1,6 @@
 package com.bikalp.eserentalservice.controller;
 
-import com.bikalp.eserentalservice.dto.auth.AuthResponse;
-import com.bikalp.eserentalservice.dto.auth.LoginRequest;
-import com.bikalp.eserentalservice.dto.auth.RegisterRequest;
+import com.bikalp.eserentalservice.dto.auth.*;
 import com.bikalp.eserentalservice.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,5 +26,20 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ForgetPasswordResponse> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        return ResponseEntity.ok(authService.forgotPassword(request));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ResetPasswordResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        return ResponseEntity.ok(authService.resetPassword(request));
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<VerifyOTPResponse> verifyOTP(@Valid @RequestBody VerifyOTPRequest request) {
+        return ResponseEntity.ok(authService.verifyOTP(request));
     }
 } 
