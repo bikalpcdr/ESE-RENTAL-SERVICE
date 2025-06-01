@@ -46,11 +46,10 @@ public interface UserService extends UserDetailsService {
 
     /**
      * Update a user
-     * @param id the user ID
      * @param userDto the updated user data
      * @return the updated user DTO
      */
-    UserDto updateUser(Long id, UserDto userDto);
+    UserDto updateUser(UserDto userDto);
 
     /**
      * Delete a user
@@ -71,4 +70,11 @@ public interface UserService extends UserDetailsService {
      * @return true if the email exists, false otherwise
      */
     boolean existsByEmail(String email);
+
+    /**
+     * Toggles the enabled status of a user.
+     * @param id the user ID
+     * @return the updated user DTO
+     */
+    UserDto toggleUserStatus(Long id);
 } 

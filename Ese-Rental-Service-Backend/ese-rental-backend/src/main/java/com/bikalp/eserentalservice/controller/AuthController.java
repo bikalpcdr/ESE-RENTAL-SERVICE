@@ -1,5 +1,7 @@
 package com.bikalp.eserentalservice.controller;
 
+import com.bikalp.eserentalservice.controller.basecontroller.BaseController;
+import com.bikalp.eserentalservice.dto.GlobalAPIResponse;
 import com.bikalp.eserentalservice.dto.auth.*;
 import com.bikalp.eserentalservice.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -14,32 +16,38 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController extends BaseController {
 
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    public ResponseEntity<GlobalAPIResponse> register(@Valid @RequestBody RegisterRequest request) {
+        return createdResponse("User registered successfully", authService.register(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
-        return ResponseEntity.ok(authService.login(request));
+    public ResponseEntity<GlobalAPIResponse> login(@Valid @RequestBody LoginRequest request) {
+        return successResponse("Login successful", authService.login(request));
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<ForgetPasswordResponse> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-        return ResponseEntity.ok(authService.forgotPassword(request));
+    public ResponseEntity<GlobalAPIResponse> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        return successResponse("Password reset instructions sent", authService.forgotPassword(request));
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<ResetPasswordResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
-        return ResponseEntity.ok(authService.resetPassword(request));
+    public ResponseEntity<GlobalAPIResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        return successResponse("Password reset successful", authService.resetPassword(request));
     }
 
     @PostMapping("/verify-otp")
-    public ResponseEntity<VerifyOTPResponse> verifyOTP(@Valid @RequestBody VerifyOTPRequest request) {
-        return ResponseEntity.ok(authService.verifyOTP(request));
+    public ResponseEntity<GlobalAPIResponse> verifyOTP(@Valid @RequestBody VerifyOTPRequest request) {
+        return successResponse("OTP verified successfully", authService.verifyOTP(request));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<GlobalAPIResponse> logout() {
+        authService.logout();
+        return noContentResponse("Logged out successfully");
     }
 } 

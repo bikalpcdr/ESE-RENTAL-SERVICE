@@ -4,6 +4,7 @@ import com.bikalp.eserentalservice.dto.UserDto;
 import com.bikalp.eserentalservice.entity.User;
 import com.bikalp.eserentalservice.exception.ResourceNotFoundException;
 import com.bikalp.eserentalservice.repository.UserRepo;
+import com.bikalp.eserentalservice.service.EmailService;
 import com.bikalp.eserentalservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -46,6 +48,15 @@ public class UserServiceImpl implements UserService {
         user.setRole(userDto.getRole());
 
         User savedUser = userRepo.save(user);
+
+        // Send welcome email
+        try {
+            emailService.sendWelcomeEmail(savedUser.getEmail(), savedUser.getUsername());
+            log.info("Welcome email sent successfully to: {}", savedUser.getEmail());
+        } catch (Exception e) {
+            log.error("Failed to send welcome email to: {}. Error: {}", savedUser.getEmail(), e.getMessage(), e);
+            // Don't throw exception here as registration was successful
+        }
         return mapToDto(savedUser);
     }
 
@@ -86,10 +97,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(Long id, UserDto userDto) {
-        log.info("Updating user with id: {}", id);
-        User user = userRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+    public UserDto updateUser(UserDto userDto) {
+        log.info("Updating user with id: {}", userDto.getId());
+        User user = userRepo.findById(userDto.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userDto.getId()));
         
         user.setUsername(userDto.getUsername());
         if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
@@ -125,6 +136,18 @@ public class UserServiceImpl implements UserService {
         return userRepo.existsByEmail(email);
     }
 
+    @Override
+    public UserDto toggleUserStatus(Long id) {
+        log.info("Toggling status for user with id: {}", id);
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        
+        user.setEnabled(!user.isEnabled());
+        User updatedUser = userRepo.save(user);
+        log.info("User with id {} status toggled to {}", id, updatedUser.isEnabled());
+        return mapToDto(updatedUser);
+    }
+
     private UserDto mapToDto(User user) {
         UserDto dto = new UserDto();
         dto.setId(user.getId());
@@ -134,6 +157,7 @@ public class UserServiceImpl implements UserService {
         dto.setFullName(user.getFullName());
         dto.setPhoneNumber(user.getPhoneNumber());
         dto.setRole(user.getRole());
+        dto.setEnabled(user.isEnabled());
         return dto;
     }
 } 

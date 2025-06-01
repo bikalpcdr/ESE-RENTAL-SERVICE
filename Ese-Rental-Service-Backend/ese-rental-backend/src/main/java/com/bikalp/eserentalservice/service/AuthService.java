@@ -1,6 +1,7 @@
 package com.bikalp.eserentalservice.service;
 
 import com.bikalp.eserentalservice.dto.auth.*;
+import com.bikalp.eserentalservice.entity.User;
 
 public interface AuthService {
     /**
@@ -22,4 +23,6 @@ public interface AuthService {
     VerifyOTPResponse verifyOTP(VerifyOTPRequest request);
 
     ResetPasswordResponse resetPassword(ResetPasswordRequest request);
+
+    void logout();
 } 

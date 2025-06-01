@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -151,23 +152,20 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public VerifyOTPResponse verifyOTP(VerifyOTPRequest request) {
-        log.info("Verifying OTP for email: {}", request.getEmail());
-        
+        log.info("Verifying OTP for user");
+
         User user = userRepo.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (user.getResetToken() == null || user.getResetTokenExpiry() == null) {
-            log.error("No OTP request found for user: {}", user.getUsername());
             throw new BadRequestException("No OTP request found. Please request a new OTP.");
         }
 
         if (user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
-            log.error("OTP expired for user: {}", user.getUsername());
             throw new BadRequestException("OTP has expired. Please request a new OTP.");
         }
 
         if (!user.getResetToken().equals(request.getOtp())) {
-            log.error("Invalid OTP provided for user: {}", user.getUsername());
             throw new BadRequestException("Invalid OTP. Please try again.");
         }
 
@@ -177,25 +175,21 @@ public class AuthServiceImpl implements AuthService {
         user.setResetTokenExpiry(LocalDateTime.now().plusMinutes(OTP_VALIDITY_MINUTES));
         userRepo.save(user);
 
-        log.info("OTP verified successfully for user: {}", user.getUsername());
-
-        return VerifyOTPResponse.builder()
-                .message("OTP verified successfully")
-                .resetToken(resetToken)
-                .email(user.getEmail())
-                .build();
+        VerifyOTPResponse response = new VerifyOTPResponse();
+        response.setMessage("OTP verified successfully");
+        response.setResetToken(resetToken);
+        return response;
     }
 
     @Override
     @Transactional
     public ResetPasswordResponse resetPassword(ResetPasswordRequest request) {
         log.info("Processing password reset request");
-        
+
         User user = userRepo.findByResetToken(request.getToken())
                 .orElseThrow(() -> new BadRequestException("Invalid reset token"));
 
         if (user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
-            log.error("Reset token expired for user: {}", user.getUsername());
             throw new BadRequestException("Reset token has expired. Please request a new OTP.");
         }
 
@@ -288,5 +282,11 @@ public class AuthServiceImpl implements AuthService {
 
     private String generateResetToken() {
         return UUID.randomUUID().toString();
+    }
+
+    @Override
+    public void logout() {
+        log.info("Logging out user");
+        SecurityContextHolder.clearContext(); // Clear the security context
     }
 } 
