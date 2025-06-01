@@ -40,19 +40,26 @@ function RegisterPage() {
             fullName: form.fullName,
             phoneNumber: form.phoneNumber
         });
-        setLoading(false);
-        setSuccess("Registration successful! You can now log in.");
-        setForm({
-            fullName: '',
-            email: '',
-            username: '',
-            password: '',
-            confirmPassword: '',
-            phoneNumber: ''
-        });
-        // Redirect to login page after successful registration (optional)
-        // navigate('/login'); 
 
+        // Handle the new GlobalAPIResponse format
+        const { status, message, data } = response.data;
+        
+        if (status) {
+            setLoading(false);
+            setSuccess(message || "Registration successful! You can now log in.");
+            setForm({
+                fullName: '',
+                email: '',
+                username: '',
+                password: '',
+                confirmPassword: '',
+                phoneNumber: ''
+            });
+            // Redirect to login page after successful registration
+            setTimeout(() => navigate('/login'), 2000);
+        } else {
+            setError(message || 'Registration failed.');
+        }
     } catch (err) {
         setLoading(false);
         if (err.response && err.response.data) {
@@ -141,9 +148,11 @@ function RegisterPage() {
              id="phoneNumber"
              name="phoneNumber"
              className="register-input"
-             placeholder="Enter your phone number"
+             placeholder="98XXXXXXXX or +97798XXXXXXXX"
              value={form.phoneNumber}
              onChange={handleChange}
+             pattern="^(\+977)?[9][7-8]\d{8}$"
+             title="Please enter a valid Nepali phone number starting with 97 or 98"
            />
           <button type="submit" className="register-submit" disabled={loading}>
             {loading ? 'Registering...' : 'Register'}

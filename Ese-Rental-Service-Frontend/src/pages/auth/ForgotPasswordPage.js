@@ -50,23 +50,28 @@ function ForgotPasswordPage() {
     try {
       const response = await api.post('/auth/forgot-password', { identifier: emailOrUsername });
       
-      const { email, phoneNumber } = response.data;
+      const { status, message: responseMessage, data } = response.data;
 
-      const maskedEmail = maskEmail(email);
-      const maskedPhoneNumber = maskPhoneNumber(phoneNumber);
+      if (status) {
+        const { email, phoneNumber } = data;
+        const maskedEmail = maskEmail(email);
+        const maskedPhoneNumber = maskPhoneNumber(phoneNumber);
 
-      // Construct the single message using the masked values
-      const successMessage = `An OTP has been sent to your registered email address ${maskedEmail} or mobile number ${maskedPhoneNumber}. Please check and enter the OTP to proceed to the next step`;
+        // Construct the single message using the masked values
+        const successMessage = `An OTP has been sent to your registered email address ${maskedEmail} or mobile number ${maskedPhoneNumber}. Please check and enter the OTP to proceed to the next step`;
 
-      setMessage(successMessage);
-      setLoading(false);
+        setMessage(successMessage);
+        setLoading(false);
 
-      // Navigate to OTP verification page after successful request
-      navigate('/verify-otp', { state: { identifier: emailOrUsername, maskedEmail: maskedEmail, maskedPhoneNumber: maskedPhoneNumber } });
-
+        // Navigate to OTP verification page after successful request
+        navigate('/verify-otp', { state: { identifier: emailOrUsername, maskedEmail: maskedEmail, maskedPhoneNumber: maskedPhoneNumber } });
+      } else {
+        setError(responseMessage || 'Failed to request password reset. Please try again.');
+        setLoading(false);
+      }
     } catch (err) {
-       setError(err.response?.data?.message || 'Failed to request password reset. Please try again.');
-       setLoading(false);
+      setError(err.response?.data?.message || 'Failed to request password reset. Please try again.');
+      setLoading(false);
     }
   };
 

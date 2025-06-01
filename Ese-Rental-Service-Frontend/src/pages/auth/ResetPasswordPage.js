@@ -1,140 +1,123 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { api } from '../../api'; // Assuming api instance is used
-import { toast } from 'react-toastify'; // Import toast for notifications
-import '../../styles/ResetPasswordPage.css'; // Uncommented CSS import
+import { api } from '../../api';
+import { toast } from 'react-toastify';
+import '../../styles/ResetPasswordPage.css';
 
 function ResetPasswordPage() {
-  const [passwords, setPasswords] = useState({
-    newPassword: '',
-    confirmPassword: ''
-  });
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
-  // Get identifier and resetToken from previous page state
-  const { identifier, resetToken } = location.state || {};
+  const { resetToken, identifier } = location.state || {};
 
-  useEffect(() => {
-    // Redirect if identifier or resetToken is missing
-    if (!identifier || !resetToken) {
-      // Optionally show an error toast here
-      toast.error('Missing information for password reset. Please start over.');
+  // Redirect if no reset token or identifier
+  React.useEffect(() => {
+    if (!resetToken || !identifier) {
       navigate('/forgot-password');
     }
-  }, [identifier, resetToken, navigate]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setPasswords(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+  }, [resetToken, identifier, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
-    if (passwords.newPassword !== passwords.confirmPassword) {
-      const mismatchError = 'New password and confirm password do not match.';
-      setError(mismatchError);
-      toast.error(mismatchError);
-      setLoading(false);
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      toast.error('Passwords do not match');
       return;
     }
 
-    // Add more password validation if needed (e.g., length, complexity)
-    if (passwords.newPassword.length < 6) {
-        const lengthError = 'Password must be at least 6 characters long.';
-        setError(lengthError);
-        toast.error(lengthError);
-        setLoading(false);
-        return;
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      toast.error('Password must be at least 6 characters long');
+      return;
     }
 
-    console.log('Attempting to reset password for', identifier);
+    setLoading(true);
 
     try {
-      // Implement API call to backend to reset password with correct keys
-      const response = await api.post('/auth/reset-password', { 
-        token: resetToken, // Use token key as required by backend
-        newPassword: passwords.newPassword, 
-        newPasswordConfirm: passwords.confirmPassword // Include confirm password
+      const response = await api.post('/auth/reset-password', {
+        resetToken,
+        identifier,
+        newPassword: password
       });
 
-      toast.success(response.data.message || 'Password reset successfully.');
-      setLoading(false);
+      const { status, message } = response.data;
 
-      // Navigate to login page after successful API call
-      navigate('/login');
-
+      if (status) {
+        toast.success(message || 'Password reset successful');
+        // Redirect to login page after successful password reset
+        setTimeout(() => navigate('/login'), 2000);
+      } else {
+        setError(message || 'Failed to reset password');
+        toast.error(message || 'Failed to reset password');
+      }
     } catch (err) {
-       setLoading(false);
-       const errorMessage = err.response?.data?.message || 'Failed to reset password. Please try again.';
-       setError(errorMessage);
-       toast.error(errorMessage);
+      const errorMessage = err.response?.data?.message || 'Failed to reset password. Please try again.';
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Render null or a loading indicator while useEffect checks for data
-  if (!identifier || !resetToken) {
-      return React.createElement('div', null, 'Loading or redirecting...'); // Or null/loading spinner
-  }
-
-  return React.createElement('div', { className: 'min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8' },
-        React.createElement('div', { className: 'max-w-md w-full space-y-8 reset-password-form' },
-            React.createElement('div', null,
-                React.createElement('h2', { className: 'mt-6 text-center text-3xl font-extrabold text-gray-900' },
-                    'Reset Password'
-                ),
-                React.createElement('p', { className: 'mt-2 text-center text-sm text-gray-600' },
-                    'Set your new password'
-                )
-            ),
-            React.createElement('form', { className: 'mt-8 space-y-6', onSubmit: handleSubmit },
-                React.createElement('div', { className: 'reset-password-input-group' },
-                    React.createElement('div', null,
-                        React.createElement('label', { htmlFor: 'newPassword', className: 'sr-only' }, 'New Password'),
-                        React.createElement('input', {
-                            id: 'newPassword',
-                            name: 'newPassword',
-                            type: 'password',
-                            required: true,
-                            className: 'reset-password-input',
-                            placeholder: 'New Password',
-                            value: passwords.newPassword,
-                            onChange: handleChange
-                        })
-                    ),
-                    React.createElement('div', null,
-                        React.createElement('label', { htmlFor: 'confirmPassword', className: 'sr-only' }, 'Confirm Password'),
-                        React.createElement('input', {
-                            id: 'confirmPassword',
-                            name: 'confirmPassword',
-                            type: 'password',
-                            required: true,
-                            className: 'reset-password-input',
-                            placeholder: 'Confirm Password',
-                            value: passwords.confirmPassword,
-                            onChange: handleChange
-                        })
-                    )
-                ),
-                React.createElement('div', null,
-                    React.createElement('button', {
-                        type: 'submit',
-                        disabled: loading,
-                        className: 'reset-password-submit'
-                    }, loading ? 'Resetting...' : 'Reset Password')
-                ),
-                error && React.createElement('div', { className: 'mt-4 text-center text-sm text-red-600' }, error)
-            )
-        )
-    );
+  return (
+    <div className="reset-password-container">
+      <main className="reset-password-main">
+        <div className="reset-password-logo">
+          <span role="img" aria-label="lock">🔒</span>
+        </div>
+        <h2 className="reset-password-title">Reset Password</h2>
+        <form className="reset-password-form" onSubmit={handleSubmit}>
+          <label htmlFor="password">New Password</label>
+          <div style={{ position: 'relative' }}>
+            <input
+              id="password"
+              className="reset-password-input"
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your new password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              style={{ width: '100%' }}
+            />
+            <button
+              type="button"
+              className="show-password-btn"
+              onClick={() => setShowPassword(!showPassword)}
+              tabIndex={-1}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </button>
+          </div>
+          <label htmlFor="confirmPassword">Confirm New Password</label>
+          <input
+            id="confirmPassword"
+            className="reset-password-input"
+            type={showPassword ? "text" : "password"}
+            placeholder="Confirm your new password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+          <button type="submit" className="reset-password-submit" disabled={loading}>
+            {loading ? 'Resetting...' : 'Reset Password'}
+          </button>
+          {error && <div className="reset-password-error">{error}</div>}
+        </form>
+        <div className="page-nav-buttons">
+          <button onClick={() => navigate(-1)} className="back-button">Back to Previous</button>
+          <button onClick={() => navigate('/')} className="home-button">Go to Home</button>
+        </div>
+      </main>
+    </div>
+  );
 }
 
 export default ResetPasswordPage; 

@@ -20,10 +20,26 @@ function LoginPage({ onLogin }) {
         username,
         password,
       });
-      const token = res.data.token;
-      localStorage.setItem("token", token);
-      onLogin(token);
-      navigate('/'); // Redirect to Home page
+      
+      // Handle the new GlobalAPIResponse format
+      const { status, message, data } = res.data;
+      
+      if (status) {
+        const token = data.token;
+        localStorage.setItem("token", token);
+        onLogin(token);
+        console.log('Login successful, response data:', data);
+        
+        // Check user role and redirect accordingly
+        const userRole = data.role;
+        if (userRole === 'SUPER_ADMIN') {
+          navigate('/superadmin/dashboard');
+        } else {
+          navigate('/');
+        }
+      } else {
+        setError(message || 'Login failed. Please check your credentials.');
+      }
     } catch (err) {
       setLoading(false);
       if (err.response && err.response.data) {

@@ -65,7 +65,6 @@ function VerifyOTPPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // setMessage(''); // Using toast
     setError('');
     setLoading(true);
 
@@ -83,38 +82,51 @@ function VerifyOTPPage() {
     try {
       const response = await api.post('/auth/verify-otp', { email: identifier, otp: otpString });
       
-      // Assuming backend returns resetToken on successful verification
-      const { resetToken } = response.data;
+      const { status, message, data } = response.data;
 
-      toast.success('OTP verified successfully.');
-      setLoading(false);
+      if (status) {
+        // Assuming backend returns resetToken on successful verification
+        const { resetToken } = data;
 
-      // Navigate to reset password page, passing resetToken and identifier
-      navigate('/reset-password', { state: { resetToken, identifier } });
+        toast.success(message || 'OTP verified successfully.');
+        setLoading(false);
 
+        // Navigate to reset password page, passing resetToken and identifier
+        navigate('/reset-password', { state: { resetToken, identifier } });
+      } else {
+        setError(message || 'Failed to verify OTP. Please try again.');
+        toast.error(message || 'Failed to verify OTP. Please try again.');
+        setLoading(false);
+      }
     } catch (err) {
-       setLoading(false);
-       const errorMessage = err.response?.data?.message || 'Failed to verify OTP. Please try again.';
-       setError(errorMessage);
-       toast.error(errorMessage);
+      setLoading(false);
+      const errorMessage = err.response?.data?.message || 'Failed to verify OTP. Please try again.';
+      setError(errorMessage);
+      toast.error(errorMessage);
     }
   };
 
   // Resend OTP functionality
   const handleResendOTP = async () => {
-     setResendLoading(true);
-     setError('');
-     try {
-        const response = await api.post('/auth/resend-otp', { identifier }); // Assuming resend endpoint
-        toast.success(response.data.message || 'OTP resent successfully. Please check your email or phone.');
+    setResendLoading(true);
+    setError('');
+    try {
+      const response = await api.post('/auth/resend-otp', { identifier });
+      const { status, message } = response.data;
+      
+      if (status) {
+        toast.success(message || 'OTP resent successfully. Please check your email or phone.');
         setTimer(60); // Reset timer on successful resend
-     } catch (err) {
-        const errorMessage = err.response?.data?.message || 'Failed to resend OTP. Please try again later.';
-        setError(errorMessage);
-        toast.error(errorMessage);
-     } finally {
-        setResendLoading(false);
-     }
+      } else {
+        toast.error(message || 'Failed to resend OTP. Please try again later.');
+      }
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || 'Failed to resend OTP. Please try again later.';
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setResendLoading(false);
+    }
   };
 
   // Render null or a loading indicator while useEffect checks for data

@@ -9,6 +9,7 @@ import RegisterPage from "./pages/auth/RegisterPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 import VerifyOTPPage from "./pages/auth/VerifyOTPPage";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
+import SuperAdminDashboard from "./pages/superadmin/SuperAdminDashboard";
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem("token"));
@@ -24,6 +25,7 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/verify-otp" element={<VerifyOTPPage />} />
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
+                <Route path="/superadmin/dashboard" element={<SuperAdminDashboard />} />
                 <Route path="*" element={<h2>Page Not Found</h2>} />
             </Routes>
         </BrowserRouter>
