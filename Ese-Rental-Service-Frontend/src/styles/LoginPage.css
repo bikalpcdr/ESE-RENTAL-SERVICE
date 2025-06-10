@@ -1,3 +1,9 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css');
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
 .login-container {
     min-height: 100vh;
     background: linear-gradient(135deg, #f3f6fd 0%, #e9f0fb 100%);
@@ -83,7 +89,7 @@
     color: #2563eb;
     font-size: 0.98rem;
     font-weight: 500;
-    padding: 0;
+    padding: 0 10px;
     transition: color 0.2s;
 }
 
@@ -185,4 +191,4 @@
 
 .home-button:hover {
     background-color: #1d4ed8;
-} 
+}

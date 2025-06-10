@@ -3,6 +3,8 @@ import axios from "axios";
 import '../../styles/LoginPage.css';
 import { useNavigate, Link } from 'react-router-dom';
 
+
+
 function LoginPage({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -88,7 +90,7 @@ function LoginPage({ onLogin }) {
               tabIndex={-1}
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
-              {showPassword ? 'Hide' : 'Show'}
+              {showPassword ? <i className="fa-regular fa-eye"></i> : <i className="fa-regular fa-eye-slash"></i>}
             </button>
           </div>
           <button type="submit" className="login-submit" disabled={loading}>
