@@ -70,7 +70,9 @@
     padding: 3rem 0;
     background-color: white;
 }
-
+.featured-section h2 {
+    text-align: start;
+}
 .featured-container {
     max-width: 80rem;
     margin: 0 auto;

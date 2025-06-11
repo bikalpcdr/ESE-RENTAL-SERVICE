@@ -1,5 +1,5 @@
 import React from 'react';
-import Header from '../components/layout/guestHeader';
+import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import RoomList from '../components/rooms/RoomList';
 import '../styles/HomePage.css';

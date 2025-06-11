@@ -92,15 +92,30 @@ footer {
 .grid {
     display: grid;
     gap: 1.5rem;
+    /*border: 1px solid #d1d5db;*/
+    flex-wrap: wrap;
+}
+.grid img {
+    height: 200px;
+    width: 100%;
+    padding: 1.5rem 1rem;
+    object-fit: cover;
+}
+.grid h3, p {
+    padding: 0 1.5rem;
+    line-height: 2rem;
+}
+.grid h3 {
+    letter-spacing: 2px;
 }
 
 .grid-cols-1 {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-}
-
-.grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
 }
+
+/*.grid-cols-3 {*/
+/*    grid-template-columns: repeat(3, minmax(0, 1fr));*/
+/*}*/
 
 @media (min-width: 768px) {
     .grid-cols-3 {
