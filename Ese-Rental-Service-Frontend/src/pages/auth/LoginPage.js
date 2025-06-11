@@ -37,7 +37,7 @@ function LoginPage({ onLogin }) {
         if (userRole === 'SUPER_ADMIN') {
           navigate('/superadmin/dashboard');
         } else {
-          navigate('/');
+          navigate('/HomePage');
         }
       } else {
         setError(message || 'Login failed. Please check your credentials.');

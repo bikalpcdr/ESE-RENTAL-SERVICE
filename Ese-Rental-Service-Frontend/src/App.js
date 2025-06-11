@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage";
-import HomePage from "./pages/guestHomePage";
+import GuestHomePage from "./pages/GuestHomePage";
+import HomePage from "./pages/HomePage";
 import { useState } from "react";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
@@ -17,7 +18,8 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<HomePage />} />
+                <Route path="/" element={<GuestHomePage />} />
+                <Route path="/HomePage" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage onLogin={setToken} />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/contact" element={<ContactPage />} />
@@ -26,6 +28,7 @@ function App() {
                 <Route path="/verify-otp" element={<VerifyOTPPage />} />
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/superadmin/dashboard" element={<SuperAdminDashboard />} />
+
                 <Route path="*" element={<h2>Page Not Found</h2>} />
             </Routes>
         </BrowserRouter>
