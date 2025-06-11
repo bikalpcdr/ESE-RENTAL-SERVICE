@@ -62,7 +62,7 @@ function SuperAdminDashboard() {
       const { status, message, data } = response.data;
       if (status) {
         setUsers(data);
-        toast.success(message, toastConfig);
+        // toast.success(message, toastConfig);
       } else {
         setError(message || 'Failed to fetch users');
         toast.error(message || 'Failed to fetch users', toastConfig);
@@ -90,7 +90,7 @@ function SuperAdminDashboard() {
           recentUsers: data.slice(0, 5), // Show last 5 users
           recentBookings: [] // TODO: Add recent bookings
         });
-        toast.success(message, toastConfig);
+        // toast.success(message, toastConfig);
       } else {
         console.error('Failed to fetch stats:', message);
         toast.error(message, toastConfig);
