@@ -1,0 +1,196 @@
+.user-list-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.user-list-title {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.user-list-message,
+.user-list-error {
+    text-align: center;
+    font-size: 1.1em;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.user-list-message {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.user-list-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.user-table th,
+.user-table td {
+    border: 1px solid #dee2e6;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.user-table th {
+    background-color: #e9ecef;
+    color: #495057;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+.user-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.user-table tbody tr:hover {
+    background-color: #e2e6ea;
+}
+
+.user-status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.85em;
+}
+
+.user-status.active {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.user-status.inactive {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.user-actions {
+    white-space: nowrap;
+}
+
+.action-btn {
+    padding: 8px 12px;
+    margin-right: 8px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+}
+
+.edit-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #0056b3;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+.toggle-status-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.toggle-status-btn:hover {
+    background-color: #5a6268;
+}
+
+.enable-btn {
+    background-color: #28a745;
+}
+
+.enable-btn:hover {
+    background-color: #218838;
+}
+
+.disable-btn {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.disable-btn:hover {
+    background-color: #e0a800;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .user-table, .user-table tbody, .user-table tr, .user-table td, .user-table th {
+        display: block;
+    }
+
+    .user-table thead {
+        display: none;
+    }
+
+    .user-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .user-table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+
+    .user-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 15px;
+        font-weight: bold;
+        text-align: left;
+        background-color: #e9ecef;
+        color: #495057;
+        box-sizing: border-box;
+    }
+
+    .user-table td:nth-of-type(1)::before { content: "ID"; }
+    .user-table td:nth-of-type(2)::before { content: "Username"; }
+    .user-table td:nth-of-type(3)::before { content: "Email"; }
+    .user-table td:nth-of-type(4)::before { content: "Full Name"; }
+    .user-table td:nth-of-type(5)::before { content: "Role"; }
+    .user-table td:nth-of-type(6)::before { content: "Status"; }
+    .user-table td:nth-of-type(7)::before { content: "Actions"; }
+
+    .user-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: flex-end;
+        padding-top: 10px;
+    }
+    
+    .action-btn {
+        flex-grow: 1;
+        text-align: center;
+        margin-right: 0;
+    }
+} 

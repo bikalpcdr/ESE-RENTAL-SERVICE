@@ -1,0 +1,130 @@
+.verify-otp-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+}
+
+.verify-otp-main {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.verify-otp-logo {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+.verify-otp-title {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.verify-otp-description {
+    color: #555;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.verify-otp-form label {
+    display: block;
+    text-align: left;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+.verify-otp-input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.verify-otp-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.verify-otp-submit {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.verify-otp-submit:hover {
+    background-color: #0056b3;
+}
+
+.verify-otp-submit:disabled {
+    background-color: #a8b9e6;
+    cursor: not-allowed;
+}
+
+.verify-otp-links {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap; /* Allow links to wrap on small screens */
+    gap: 10px; /* Space between links */
+}
+
+.verify-otp-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px; /* Add padding for better click area */
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.verify-otp-link:hover {
+    text-decoration: underline;
+    background-color: #e9f0f8;
+}
+
+.verify-otp-link:disabled {
+    color: #a8b9e6;
+    cursor: not-allowed;
+}
+
+.page-nav-buttons {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.page-nav-buttons button {
+    background-color: #6c757d;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.page-nav-buttons button:hover {
+    background-color: #5a6268;
+} 

@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.bikalp.eserentalservice.ExamPortalBackendApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 16.6 s - in com.bikalp.eserentalservice.ExamPortalBackendApplicationTests

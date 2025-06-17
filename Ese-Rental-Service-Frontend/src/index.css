@@ -1,10 +1,10 @@
-@import './styles/body.css';
-@import './styles/header.css';
-@import './styles/footer.css';
-@import './styles/buttons.css';
-@import './styles/links.css';
+/* @import './styles/body.css'; */
+/* @import './styles/header.css'; */
+/* @import './styles/footer.css'; */
+/* @import './styles/buttons.css'; */
+/* @import './styles/links.css'; */
 @import './styles/inputs.css';
-@import './styles/containers.css';
+/* @import './styles/containers.css'; */
 @import './styles/grids.css';
 
 /* Custom styles */
@@ -238,56 +238,58 @@ footer {
 
 /* Hover effects */
 .hover\:bg-blue-700:hover {
-    @apply bg-blue-700;
+    @apply hover:bg-blue-700;
 }
 
 .hover\:bg-gray-300:hover {
-    @apply bg-gray-300;
+    @apply hover:bg-gray-300;
 }
 
 .hover\:text-blue-800:hover {
-    @apply text-blue-800;
+    @apply hover:text-blue-800;
 }
 
 .hover\:text-white:hover {
-    @apply text-white;
+    @apply hover:text-white;
 }
 
-/* Transitions */
+/* Transitions and shadows */
 .transition {
     @apply transition;
 }
 
-/* Shadows */
 .shadow-md {
     @apply shadow-md;
 }
 
 /* Focus styles */
 .focus\:outline-none:focus {
-    @apply outline-none;
+    @apply focus:outline-none;
 }
 
 .focus\:ring-2:focus {
-    @apply ring-2;
+    @apply focus:ring-2;
 }
 
 .focus\:ring-blue-500:focus {
-    @apply ring-blue-500;
+    @apply focus:ring-blue-500;
 }
 
-/* Responsive */
+/* Responsive utilities */
 @media (min-width: 768px) {
     .md\:block {
-        @apply block;
+        @apply md:block;
     }
+
     .md\:hidden {
-        @apply hidden;
+        @apply md:hidden;
     }
+
     .md\:grid-cols-3 {
-        @apply grid-cols-3;
+        @apply md:grid-cols-3;
     }
+
     .md\:grid-cols-4 {
-        @apply grid-cols-4;
+        @apply md:grid-cols-4;
     }
 } 
