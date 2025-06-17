@@ -22,32 +22,32 @@ public class AuthController extends BaseController {
 
     @PostMapping("/register")
     public ResponseEntity<GlobalAPIResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return createdResponse("User registered successfully", authService.register(request));
+        return registerResponse(authService.register(request));
     }
 
     @PostMapping("/login")
     public ResponseEntity<GlobalAPIResponse> login(@Valid @RequestBody LoginRequest request) {
-        return successResponse("Login successful", authService.login(request));
+        return loginResponse(authService.login(request));
     }
 
     @PostMapping("/forgot-password")
     public ResponseEntity<GlobalAPIResponse> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-        return successResponse("Password reset instructions sent", authService.forgotPassword(request));
+        return forgotPasswordResponse(authService.forgotPassword(request));
     }
 
     @PostMapping("/reset-password")
     public ResponseEntity<GlobalAPIResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
-        return successResponse("Password reset successful", authService.resetPassword(request));
+        return resetPasswordResponse(authService.resetPassword(request));
     }
 
     @PostMapping("/verify-otp")
     public ResponseEntity<GlobalAPIResponse> verifyOTP(@Valid @RequestBody VerifyOTPRequest request) {
-        return successResponse("OTP verified successfully", authService.verifyOTP(request));
+        return customResponse("OTP verified successfully", authService.verifyOTP(request));
     }
 
     @PostMapping("/logout")
     public ResponseEntity<GlobalAPIResponse> logout() {
         authService.logout();
-        return noContentResponse("Logged out successfully");
+        return customResponse("Logged out successfully",null);
     }
 } 

@@ -28,31 +28,31 @@ public class UserController extends BaseController {
     @PostMapping("/update")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<GlobalAPIResponse> update(@Valid @RequestBody UserDto userDto) {
-        return successResponse("User updated successfully", userService.updateUser(userDto));
+        return customResponse("User updated successfully", userService.updateUser(userDto));
     }
 
     @PostMapping("/{id}")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<GlobalAPIResponse> getById(@PathVariable Long id) {
-        return successResponse("User retrieved successfully", userService.getUserById(id));
+        return customResponse("User retrieved successfully", userService.getUserById(id));
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @GetMapping
     public ResponseEntity<GlobalAPIResponse> getAllUsers() {
-        return successResponse("Users retrieved successfully", userService.getAllUsers());
+        return customResponse("Users retrieved successfully", userService.getAllUsers());
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<GlobalAPIResponse> deleteById(@PathVariable Long id) {
         userService.deleteUser(id);
-        return noContentResponse("User deleted successfully");
+        return customResponse("User deleted successfully",null);
     }
 
     @PostMapping("/toggle-status/{id}")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<GlobalAPIResponse> toggleStatus(@PathVariable Long id) {
-        return successResponse("User status toggled successfully", userService.toggleUserStatus(id));
+        return customResponse("User status toggled successfully", userService.toggleUserStatus(id));
     }
 }
