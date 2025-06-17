@@ -33,6 +33,15 @@ public class BaseController {
                         .build());
     }
 
+    protected ResponseEntity<GlobalAPIResponse> verifyOTPResponse(Object data) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(GlobalAPIResponse.builder()
+                        .status(true)
+                        .message("OTP verified successfully..!!")
+                        .data(data)
+                        .build());
+    }
+
     protected ResponseEntity<GlobalAPIResponse> forgotPasswordResponse(Object data) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(GlobalAPIResponse.builder()
@@ -50,12 +59,71 @@ public class BaseController {
                 .build());
     }
 
-    protected ResponseEntity<GlobalAPIResponse> createdResponse(String message, Object data) {
+    protected ResponseEntity<GlobalAPIResponse> logoutResponse() {
+        return ResponseEntity.ok(GlobalAPIResponse.builder()
+                .status(true)
+                .message("Logged out successfully..!!")
+                .data(null)
+                .build());
+    }
+
+    protected ResponseEntity<GlobalAPIResponse> createdResponse(String entityName, Object data) {
+        String message = String.format("%s created successfully..!!", entityName);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(GlobalAPIResponse.builder()
                         .status(true)
                         .message(message)
                         .data(data)
+                        .build());
+    }
+
+    protected ResponseEntity<GlobalAPIResponse> updateResponse(String entityName, Object data) {
+        String message = String.format("%s  updated successfully..!!", entityName);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(GlobalAPIResponse.builder()
+                        .status(true)
+                        .message(message)
+                        .data(data)
+                        .build());
+    }
+
+    protected ResponseEntity<GlobalAPIResponse> fetchResponse(String entityName, Object data) {
+        String message = String.format("%s  retrieved successfully..!!", entityName);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(GlobalAPIResponse.builder()
+                        .status(true)
+                        .message(message)
+                        .data(data)
+                        .build());
+    }
+
+    protected ResponseEntity<GlobalAPIResponse> fetchListResponse(String entityName, Object data) {
+        String message = String.format("%s  retrieved successfully..!!", entityName);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(GlobalAPIResponse.builder()
+                        .status(true)
+                        .message(message)
+                        .data(data)
+                        .build());
+    }
+
+    protected ResponseEntity<GlobalAPIResponse> deleteResponse(String entityName) {
+        String message = String.format("%s  deleted successfully..!!", entityName);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(GlobalAPIResponse.builder()
+                        .status(true)
+                        .message(message)
+                        .data(null)
+                        .build());
+    }
+
+    protected ResponseEntity<GlobalAPIResponse> toggleResponse(String entityName) {
+        String message = String.format("%s  status toggled successfully..!!", entityName);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(GlobalAPIResponse.builder()
+                        .status(true)
+                        .message(message)
+                        .data(null)
                         .build());
     }
 } 

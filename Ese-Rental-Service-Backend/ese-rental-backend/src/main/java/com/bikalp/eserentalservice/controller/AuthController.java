@@ -42,12 +42,12 @@ public class AuthController extends BaseController {
 
     @PostMapping("/verify-otp")
     public ResponseEntity<GlobalAPIResponse> verifyOTP(@Valid @RequestBody VerifyOTPRequest request) {
-        return customResponse("OTP verified successfully", authService.verifyOTP(request));
+        return verifyOTPResponse(authService.verifyOTP(request));
     }
 
     @PostMapping("/logout")
     public ResponseEntity<GlobalAPIResponse> logout() {
         authService.logout();
-        return customResponse("Logged out successfully",null);
+        return logoutResponse();
     }
 } 

@@ -10,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -22,37 +21,38 @@ public class UserController extends BaseController {
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<GlobalAPIResponse> create(@Valid @RequestBody UserDto userDto) {
-        return createdResponse("User created successfully", userService.createUser(userDto));
+        return createdResponse("User", userService.createUser(userDto));
     }
 
     @PostMapping("/update")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<GlobalAPIResponse> update(@Valid @RequestBody UserDto userDto) {
-        return customResponse("User updated successfully", userService.updateUser(userDto));
+        return updateResponse("User", userService.updateUser(userDto));
     }
 
     @PostMapping("/{id}")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<GlobalAPIResponse> getById(@PathVariable Long id) {
-        return customResponse("User retrieved successfully", userService.getUserById(id));
+        return fetchResponse("User", userService.getUserById(id));
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @GetMapping
     public ResponseEntity<GlobalAPIResponse> getAllUsers() {
-        return customResponse("Users retrieved successfully", userService.getAllUsers());
+        return fetchListResponse("Users", userService.getAllUsers());
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<GlobalAPIResponse> deleteById(@PathVariable Long id) {
         userService.deleteUser(id);
-        return customResponse("User deleted successfully",null);
+        return deleteResponse("User");
     }
 
-    @PostMapping("/toggle-status/{id}")
+    @PostMapping("/toggle-status/{userId}")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
-    public ResponseEntity<GlobalAPIResponse> toggleStatus(@PathVariable Long id) {
-        return customResponse("User status toggled successfully", userService.toggleUserStatus(id));
+    public ResponseEntity<GlobalAPIResponse> toggleStatus(@PathVariable Long userId) {
+        userService.toggleUserStatus(userId);
+        return toggleResponse("User");
     }
 }
